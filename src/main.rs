@@ -34,9 +34,17 @@ fn main() {
 
         let resp = shorty_client.shorten(grpc::RequestOptions::new(), shorten_request);
 
-        let contents = resp.wait().unwrap();
+        let contents = resp.wait();
 
-        println!("{:?}", contents.1);
+        match contents {
+            Err(_) => {
+                println!("Error with request {}", count);
+                continue;
+            },
+            Ok(c) => {
+                println!("{:?}", c.1);
+            },
+        }
 
         if count == 1000 {
             println!("Done looping");
