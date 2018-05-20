@@ -3,6 +3,9 @@ extern crate grpc;
 extern crate tls_api;
 
 use shorty_grpc::ShortyService;
+use shorty::*;
+use shorty_grpc::ShortyServiceClient;
+use grpc::RequestOptions;
 
 fn main() {
 
@@ -11,8 +14,8 @@ fn main() {
     loop {
         count += 1;
 
-        let mut shorten_request = shorty::ShortenRequest::new();
-        let mut campaign = shorty::GoogleAnalyticsCampaign::new();
+        let mut shorten_request = ShortenRequest::new();
+        let mut campaign = GoogleAnalyticsCampaign::new();
 
         campaign.set_utm_campaign("test-campaign".parse().unwrap());
 
@@ -30,9 +33,9 @@ fn main() {
             client_conf
         ).unwrap();
 
-        let shorty_client = &shorty_grpc::ShortyServiceClient::with_client(client.clone());
+        let shorty_client = ShortyServiceClient::with_client(client.clone());
 
-        let resp = shorty_client.shorten(grpc::RequestOptions::new(), shorten_request);
+        let resp = shorty_client.shorten(RequestOptions::new(), shorten_request);
 
         let contents = resp.wait();
 
